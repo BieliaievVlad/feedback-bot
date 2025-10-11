@@ -83,7 +83,12 @@ public class FeedbackBot extends TelegramWebhookBot {
 		}
 
 		if (cacheService.isUserValid(user) && !text.startsWith("/")) {
-			return handler.handleFeedback(text, user);
+			try {
+				return handler.handleFeedback(text, user);
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+			}
 		}
 
 		return null;

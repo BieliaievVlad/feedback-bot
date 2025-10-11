@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.bieliaiev.feedback_bot.dto.FeedbackDto;
 import com.bieliaiev.feedback_bot.entity.Feedback;
+import com.bieliaiev.feedback_bot.model.FeedbackAnalysis;
 import com.bieliaiev.feedback_bot.model.User;
 
 @Component
@@ -19,10 +20,11 @@ public class FeedbackMapper {
 						feedback.getBranch()
 						),
 				feedback.getFeedbackText(),
-				feedback.getCategory(),
-				feedback.getLevel(),
-				feedback.getSolution()
-				);
+				new FeedbackAnalysis(
+						feedback.getCategory(),
+						feedback.getLevel(),
+						feedback.getSolution()
+						));
 	}
 	
 	public Feedback dtoToFeedback (FeedbackDto dto) {
@@ -33,9 +35,9 @@ public class FeedbackMapper {
 				dto.getUser().getPosition(),
 				dto.getUser().getBranch(),
 				dto.getFeedbackText(),
-				dto.getCategory(),
-				dto.getLevel(),
-				dto.getSolution()
+				dto.getAnalysis().getCategory(),
+				dto.getAnalysis().getLevel(),
+				dto.getAnalysis().getSolution()
 				);
 	}
 }

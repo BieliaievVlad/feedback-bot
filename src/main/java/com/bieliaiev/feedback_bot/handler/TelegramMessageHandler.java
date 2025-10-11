@@ -33,7 +33,7 @@ public class TelegramMessageHandler {
 		return response;
 	}
 	
-	public SendMessage handleFeedback (String text, User user) {
+	public SendMessage handleFeedback (String text, User user) throws Exception {
 		feedbackService.saveFeedback(text, user);
 		return new SendMessage(String.valueOf(user.getChatId()), "Thank you for your feedback!");
 	}

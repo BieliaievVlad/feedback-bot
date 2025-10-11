@@ -8,19 +8,19 @@ import com.bieliaiev.feedback_bot.dto.FeedbackDto;
 import com.bieliaiev.feedback_bot.dto.UpsertFeedbackDto;
 import com.bieliaiev.feedback_bot.entity.Feedback;
 import com.bieliaiev.feedback_bot.mapper.FeedbackMapper;
+import com.bieliaiev.feedback_bot.model.FeedbackAnalysis;
 import com.bieliaiev.feedback_bot.model.User;
 import com.bieliaiev.feedback_bot.repository.FeedbackRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class FeedbackService {
 	
 	private FeedbackRepository repository;
 	private FeedbackMapper mapper;
-
-	public FeedbackService(FeedbackRepository repository, FeedbackMapper mapper) {
-		this.repository = repository;
-		this.mapper = mapper;
-	}
+	private OpenAiFeedbackService service;
 	
 	public FeedbackDto save (UpsertFeedbackDto dto) {
 		
@@ -37,11 +37,18 @@ public class FeedbackService {
 		return mapper.feedbackToDto(feedback);
 	}
 	
-	public UpsertFeedbackDto createFeedbackDto(String text, User user) {
-		return new UpsertFeedbackDto(LocalDateTime.now(), user, text, null, null, null);
+	public UpsertFeedbackDto createFeedbackDto(String text, User user) throws Exception {
+		FeedbackAnalysis analysis = service.analyzeFeedback(text);
+		return new UpsertFeedbackDto(
+				LocalDateTime.now(), 
+				user, 
+				text, 
+				analysis.getCategory(), 
+				analysis.getLevel(), 
+				analysis.getSolution());
 	}
 	
-	public FeedbackDto saveFeedback (String text, User user) {
+	public FeedbackDto saveFeedback (String text, User user) throws Exception {
 		return save(createFeedbackDto(text, user));
 	}
 }
