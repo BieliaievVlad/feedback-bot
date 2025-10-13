@@ -23,6 +23,7 @@ public class FeedbackService {
 	private FeedbackMapper mapper;
 	private OpenAiFeedbackService opeAiService;
 	private GoogleDocsService googleDocsService;
+	private TrelloService trelloService;
 	
 	public FeedbackDto save (UpsertFeedbackDto dto) throws IOException {
 		
@@ -37,6 +38,7 @@ public class FeedbackService {
 				dto.getSolution()));
 		
 		googleDocsService.appendFeedback(feedback);
+		trelloService.createCard("Feedback", dto.getFeedbackText());
 		
 		return mapper.feedbackToDto(feedback);
 	}
