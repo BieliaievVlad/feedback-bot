@@ -54,15 +54,15 @@ public class KeyboardFactory {
 		return keyboard;
 	}
 	
-	public ReplyKeyboardMarkup createFeedbackKeyboard() {
-		
-		KeyboardRow row = new KeyboardRow();
-		row.add(new KeyboardButton("Send feedback"));
-		ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
-		keyboard.setKeyboard(Collections.singletonList(row));
-		keyboard.setResizeKeyboard(true);
-		keyboard.setOneTimeKeyboard(true);
-		
-		return keyboard;
-	}
+//	public ReplyKeyboardMarkup createFeedbackKeyboard() {
+//		
+//		KeyboardRow row = new KeyboardRow();
+//		row.add(new KeyboardButton("Send feedback"));
+//		ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+//		keyboard.setKeyboard(Collections.singletonList(row));
+//		keyboard.setResizeKeyboard(true);
+//		keyboard.setOneTimeKeyboard(true);
+//		
+//		return keyboard;
+//	}
 }

@@ -73,14 +73,14 @@ public class FeedbackBot extends TelegramWebhookBot {
 			}
 		}
 
-		if (text.equalsIgnoreCase("send feedback")) {
-			if (cacheService.isUserValid(user)) {
-				return handler.askForFeedback(chatId);
-
-			} else {
-				return handler.handleInvalidUser(chatId);
-			}
-		}
+//		if (text.equalsIgnoreCase("send feedback")) {
+//			if (cacheService.isUserValid(user)) {
+//				return handler.askForFeedback(chatId);
+//
+//			} else {
+//				return handler.handleInvalidUser(chatId);
+//			}
+//		}
 
 		if (cacheService.isUserValid(user) && !text.startsWith("/")) {
 			try {
@@ -89,6 +89,8 @@ public class FeedbackBot extends TelegramWebhookBot {
 				
 				e.printStackTrace();
 			}
+		} else {
+			return handler.handleInvalidUser(chatId);
 		}
 
 		return null;

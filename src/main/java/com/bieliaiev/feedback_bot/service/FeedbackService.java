@@ -1,5 +1,6 @@
 package com.bieliaiev.feedback_bot.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -20,9 +21,10 @@ public class FeedbackService {
 	
 	private FeedbackRepository repository;
 	private FeedbackMapper mapper;
-	private OpenAiFeedbackService service;
+	private OpenAiFeedbackService opeAiService;
+	private GoogleDocsService googleDocsService;
 	
-	public FeedbackDto save (UpsertFeedbackDto dto) {
+	public FeedbackDto save (UpsertFeedbackDto dto) throws IOException {
 		
 		Feedback feedback = repository.save(new Feedback(
 				dto.getCreatedAt(),
@@ -34,11 +36,13 @@ public class FeedbackService {
 				dto.getLevel(),
 				dto.getSolution()));
 		
+		googleDocsService.appendFeedback(feedback);
+		
 		return mapper.feedbackToDto(feedback);
 	}
 	
 	public UpsertFeedbackDto createFeedbackDto(String text, User user) throws Exception {
-		FeedbackAnalysis analysis = service.analyzeFeedback(text);
+		FeedbackAnalysis analysis = opeAiService.analyzeFeedback(text);
 		return new UpsertFeedbackDto(
 				LocalDateTime.now(), 
 				user, 

@@ -59,13 +59,10 @@ public class OpenAiFeedbackService {
 
         String responseBody = response.body();
 
-        // Извлекаем JSON из ответа модели (модель возвращает JSON внутри content)
-        // Обычно ответ приходит в структуре: choices[0].message.content
         Map<?, ?> jsonResponse = objectMapper.readValue(responseBody, Map.class);
         Map<?, ?> choiceMessage = (Map<?, ?>) ((Map<?, ?>) ((java.util.List<?>) jsonResponse.get("choices")).get(0)).get("message");
         String content = (String) choiceMessage.get("content");
 
-        // Парсим JSON из content в FeedbackAnalysis
         System.out.println(objectMapper.readValue(content, FeedbackAnalysis.class));
         return objectMapper.readValue(content, FeedbackAnalysis.class);
     }

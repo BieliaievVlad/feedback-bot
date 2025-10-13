@@ -29,7 +29,7 @@ public class TelegramMessageHandler {
 	
 	public SendMessage handleBranchResponse (Long chatId) {
 		SendMessage response = new SendMessage(String.valueOf(chatId), "Thanks, now you can leave your feedback!");
-		response.setReplyMarkup(KeyboardFactory.createFeedbackKeyboard());
+//		response.setReplyMarkup(KeyboardFactory.createFeedbackKeyboard());
 		return response;
 	}
 	
@@ -38,9 +38,9 @@ public class TelegramMessageHandler {
 		return new SendMessage(String.valueOf(user.getChatId()), "Thank you for your feedback!");
 	}
 	
-	public SendMessage askForFeedback (Long chatId) {
-		return new SendMessage(String.valueOf(chatId), "Please type your feedback below and send.");
-	}
+//	public SendMessage askForFeedback (Long chatId) {
+//		return new SendMessage(String.valueOf(chatId), "Please type your feedback below and send.");
+//	}
 	
 	public SendMessage handleInvalidUser (Long chatId) {
 		return new SendMessage(String.valueOf(chatId), "Please restart the bot first by sending /start");
