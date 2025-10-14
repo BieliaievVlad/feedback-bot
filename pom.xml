@@ -90,13 +90,6 @@
 			<artifactId>telegrambots-spring-boot-starter</artifactId>
 			<version>6.9.7.1</version>
 		</dependency>
-		<!--
-		https://mvnrepository.com/artifact/com.taskadapter/trello-java-wrapper -->
-		<dependency>
-			<groupId>com.taskadapter</groupId>
-			<artifactId>trello-java-wrapper</artifactId>
-			<version>0.14</version>
-		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

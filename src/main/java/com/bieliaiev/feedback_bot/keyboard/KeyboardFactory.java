@@ -1,7 +1,6 @@
 package com.bieliaiev.feedback_bot.keyboard;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -53,16 +52,4 @@ public class KeyboardFactory {
 		
 		return keyboard;
 	}
-	
-//	public ReplyKeyboardMarkup createFeedbackKeyboard() {
-//		
-//		KeyboardRow row = new KeyboardRow();
-//		row.add(new KeyboardButton("Send feedback"));
-//		ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
-//		keyboard.setKeyboard(Collections.singletonList(row));
-//		keyboard.setResizeKeyboard(true);
-//		keyboard.setOneTimeKeyboard(true);
-//		
-//		return keyboard;
-//	}
 }

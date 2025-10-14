@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.bieliaiev.feedback_bot.utils.StaticStrings;
+
 @Service
 public class TrelloService {
 
@@ -19,7 +21,7 @@ public class TrelloService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public void createCard(String title, String description) {
-        String url = UriComponentsBuilder.fromUriString("https://api.trello.com/1/cards")
+        String url = UriComponentsBuilder.fromUriString(StaticStrings.TRELLO)
                 .queryParam("idList", listId)
                 .queryParam("name", title)
                 .queryParam("desc", description)

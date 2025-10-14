@@ -5,9 +5,11 @@ import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.bieliaiev.feedback_bot.entity.Feedback;
+import com.bieliaiev.feedback_bot.dto.FeedbackDto;
+import com.bieliaiev.feedback_bot.utils.StaticStrings;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.docs.v1.Docs;
@@ -22,11 +24,12 @@ import com.google.auth.oauth2.GoogleCredentials;
 @Service
 public class GoogleDocsService {
 
-    private final Docs docsService;
-    private final String documentId = "1nTCdNwkqfdJS0nCpwkewzl7Ks6ipUbkZZ2MEJZ-_GdI";
+	@Value("${google.document.id}")
+	private String documentId;
+    private Docs docsService;
 
     public GoogleDocsService() throws IOException, GeneralSecurityException {
-        InputStream in = getClass().getResourceAsStream("/google-credentials.json");
+        InputStream in = getClass().getResourceAsStream(StaticStrings.GOOGLE_CREDS);
         
         GoogleCredentials credentials = GoogleCredentials.fromStream(in)
                 .createScoped(List.of(DocsScopes.DOCUMENTS, DocsScopes.DRIVE));
@@ -35,20 +38,20 @@ public class GoogleDocsService {
                 GoogleNetHttpTransport.newTrustedTransport(),
                 GsonFactory.getDefaultInstance(),
                 new HttpCredentialsAdapter(credentials)
-        ).setApplicationName("Feedback Bot").build();
+        ).setApplicationName(StaticStrings.GOOGLE_APP_NAME).build();
     }
 
-    public void appendFeedback(Feedback feedback) throws IOException {
+    public void appendFeedback(FeedbackDto feedback) throws IOException {
 
         String formatted = String.format(
-                "%s%n%s, %s%n%s%nCategory: %s%nCriticality level: %d%nSolution: %s%n-----------------------------%n",
+                StaticStrings.GOOGLE_DOC_TEXT_FORMAT,
                 feedback.getCreatedAt(),
-                feedback.getPosition(),
-                feedback.getBranch(),
+                feedback.getUser().getPosition(),
+                feedback.getUser().getBranch(),
                 feedback.getFeedbackText(),
-                feedback.getCategory(),
-                feedback.getLevel(),
-                feedback.getSolution()
+                feedback.getAnalysis().getCategory(),
+                feedback.getAnalysis().getLevel(),
+                feedback.getAnalysis().getSolution()
         );
 
         Request request = new Request()

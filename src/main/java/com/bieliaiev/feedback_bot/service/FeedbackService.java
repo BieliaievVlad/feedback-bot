@@ -12,7 +12,6 @@ import com.bieliaiev.feedback_bot.mapper.FeedbackMapper;
 import com.bieliaiev.feedback_bot.model.FeedbackAnalysis;
 import com.bieliaiev.feedback_bot.model.User;
 import com.bieliaiev.feedback_bot.repository.FeedbackRepository;
-
 import lombok.AllArgsConstructor;
 
 @Service
@@ -21,30 +20,26 @@ public class FeedbackService {
 	
 	private FeedbackRepository repository;
 	private FeedbackMapper mapper;
-	private OpenAiFeedbackService opeAiService;
-	private GoogleDocsService googleDocsService;
-	private TrelloService trelloService;
 	
 	public FeedbackDto save (UpsertFeedbackDto dto) throws IOException {
 		
-		Feedback feedback = repository.save(new Feedback(
-				dto.getCreatedAt(),
-				dto.getUser().getChatId(),
-				dto.getUser().getPosition(),
-				dto.getUser().getBranch(),
-				dto.getFeedbackText(),
-				dto.getCategory(),
-				dto.getLevel(),
-				dto.getSolution()));
+		Feedback feedback = Feedback.builder()
+				.createdAt(dto.getCreatedAt())
+				.chatId(dto.getUser().getChatId())
+				.position(dto.getUser().getPosition())
+				.branch(dto.getUser().getBranch())
+				.feedbackText(dto.getFeedbackText())
+				.category(dto.getCategory())
+				.level(dto.getLevel())
+				.solution(dto.getSolution())
+				.build();
 		
-		googleDocsService.appendFeedback(feedback);
-		trelloService.createCard("Feedback", dto.getFeedbackText());
+		repository.save(feedback);
 		
 		return mapper.feedbackToDto(feedback);
 	}
 	
-	public UpsertFeedbackDto createFeedbackDto(String text, User user) throws Exception {
-		FeedbackAnalysis analysis = opeAiService.analyzeFeedback(text);
+	public UpsertFeedbackDto createFeedbackDto(String text, User user, FeedbackAnalysis analysis) throws Exception {
 		return new UpsertFeedbackDto(
 				LocalDateTime.now(), 
 				user, 
@@ -54,7 +49,7 @@ public class FeedbackService {
 				analysis.getSolution());
 	}
 	
-	public FeedbackDto saveFeedback (String text, User user) throws Exception {
-		return save(createFeedbackDto(text, user));
+	public FeedbackDto saveFeedback (String text, User user, FeedbackAnalysis analysis) throws Exception {
+		return save(createFeedbackDto(text, user, analysis));
 	}
 }

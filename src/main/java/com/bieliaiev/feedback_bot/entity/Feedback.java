@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Feedback {
 
 	@Id
@@ -49,22 +51,4 @@ public class Feedback {
 	@Column(name = "solution")
 	private String solution;
 	
-	public Feedback (
-			LocalDateTime createdAt,
-			Long chatId,
-			String position,
-			String branch,
-			String feedbackText,
-			String category,
-			Integer level,
-			String solution) {
-		this.createdAt = createdAt;
-		this.chatId = chatId;
-		this.position = position;
-		this.branch = branch;
-		this.feedbackText = feedbackText;
-		this.category = category;
-		this.level = level;
-		this.solution = solution;
-	}
 }
