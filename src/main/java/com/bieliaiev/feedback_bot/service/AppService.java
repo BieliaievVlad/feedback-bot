@@ -11,7 +11,7 @@ import com.bieliaiev.feedback_bot.enums.Branches;
 import com.bieliaiev.feedback_bot.enums.Positions;
 import com.bieliaiev.feedback_bot.handler.TelegramMessageHandler;
 import com.bieliaiev.feedback_bot.model.FeedbackAnalysis;
-import com.bieliaiev.feedback_bot.model.User;
+import com.bieliaiev.feedback_bot.model.BotUser;
 import com.bieliaiev.feedback_bot.utils.StaticStrings;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class AppService {
 	private CacheService cacheService;
 	private TelegramMessageHandler handler;
 	
-	public FeedbackDto handleFeedback(String text, User user) throws Exception {
+	public FeedbackDto handleFeedback(String text, BotUser user) throws Exception {
 		
 		FeedbackAnalysis analysis = openAiService.analyzeFeedback(text);
 		UpsertFeedbackDto upsertDto = feedbackService.createFeedbackDto(text, user, analysis);
@@ -60,8 +60,13 @@ public class AppService {
 	public SendMessage prepareMessage (Update update, String text) {
 		
 		SendMessage message = new SendMessage();
+		
+	    if (update == null || update.getMessage() == null) {
+	        return null;
+	    }
+	    
 		long chatId = update.getMessage().getChatId();
-		User user = cacheService.getUser(chatId);
+		BotUser user = cacheService.getUser(chatId);
 
 		if (text.equalsIgnoreCase("/start")) {
 			cacheService.setChatId(chatId);
@@ -96,6 +101,5 @@ public class AppService {
 		}
 		
 		return message;
-		
 	}
 }

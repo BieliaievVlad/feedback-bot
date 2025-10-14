@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import com.bieliaiev.feedback_bot.keyboard.KeyboardFactory;
-import com.bieliaiev.feedback_bot.model.User;
+import com.bieliaiev.feedback_bot.model.BotUser;
 import com.bieliaiev.feedback_bot.utils.StaticStrings;
 
 @Service
@@ -26,7 +26,7 @@ public class TelegramMessageHandler {
 		return new SendMessage(String.valueOf(chatId), StaticStrings.USER_REGISTRATION_DONE);
 	}
 	
-	public SendMessage handleFeedback (String text, User user) throws Exception {
+	public SendMessage handleFeedback (String text, BotUser user) {
 		return new SendMessage(String.valueOf(user.getChatId()), StaticStrings.FEEDBACK_SAVED);
 	}
 	

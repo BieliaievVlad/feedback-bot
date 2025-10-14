@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class User {
+public class BotUser {
 
 	private Long chatId;
 	private String position;
