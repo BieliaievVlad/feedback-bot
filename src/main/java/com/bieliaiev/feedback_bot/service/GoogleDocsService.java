@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bieliaiev.feedback_bot.dto.FeedbackDto;
+import com.bieliaiev.feedback_bot.exception.GoogleDocsException;
 import com.bieliaiev.feedback_bot.utils.StaticStrings;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -26,41 +27,56 @@ public class GoogleDocsService {
 
 	@Value("${google.document.id}")
 	private String documentId;
+	
+	@Value("${google.creds.path}")
+	private String googleCreds;
     private Docs docsService;
+    
+	public GoogleDocsService() {
 
-    public GoogleDocsService() throws IOException, GeneralSecurityException {
-        InputStream in = getClass().getResourceAsStream(StaticStrings.GOOGLE_CREDS);
-        
-        GoogleCredentials credentials = GoogleCredentials.fromStream(in)
-                .createScoped(List.of(DocsScopes.DOCUMENTS, DocsScopes.DRIVE));
-        
-        docsService = new Docs.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                new HttpCredentialsAdapter(credentials)
-        ).setApplicationName(StaticStrings.GOOGLE_APP_NAME).build();
-    }
+		try (InputStream in = getClass().getResourceAsStream(googleCreds)) {
+
+			if (in == null) {
+				throw new GoogleDocsException("Google credentials file not found: " + googleCreds);
+			}
+
+			GoogleCredentials credentials = GoogleCredentials.fromStream(in)
+					.createScoped(List.of(DocsScopes.DOCUMENTS, DocsScopes.DRIVE));
+
+			docsService = new Docs.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+					GsonFactory.getDefaultInstance(), new HttpCredentialsAdapter(credentials))
+					.setApplicationName(StaticStrings.GOOGLE_APP_NAME).build();
+
+		} catch (IOException | GeneralSecurityException e) {
+			throw new GoogleDocsException("Failed to initialize Google Docs service", e);
+		}
+	}
 
     public void appendFeedback(FeedbackDto feedback) throws IOException {
 
-        String formatted = String.format(
-                StaticStrings.GOOGLE_DOC_TEXT_FORMAT,
-                feedback.getCreatedAt(),
-                feedback.getUser().getPosition(),
-                feedback.getUser().getBranch(),
-                feedback.getFeedbackText(),
-                feedback.getAnalysis().getCategory(),
-                feedback.getAnalysis().getLevel(),
-                feedback.getAnalysis().getSolution()
-        );
+    	try {
+            String formatted = String.format(
+                    StaticStrings.GOOGLE_DOC_TEXT_FORMAT,
+                    feedback.getCreatedAt(),
+                    feedback.getUser().getPosition(),
+                    feedback.getUser().getBranch(),
+                    feedback.getFeedbackText(),
+                    feedback.getAnalysis().getCategory(),
+                    feedback.getAnalysis().getLevel(),
+                    feedback.getAnalysis().getSolution()
+            );
 
-        Request request = new Request()
-                .setInsertText(new InsertTextRequest()
-                        .setText(formatted)
-                        .setEndOfSegmentLocation(new EndOfSegmentLocation()));
+            Request request = new Request()
+                    .setInsertText(new InsertTextRequest()
+                            .setText(formatted)
+                            .setEndOfSegmentLocation(new EndOfSegmentLocation()));
 
-        docsService.documents().batchUpdate(documentId,
-                new BatchUpdateDocumentRequest().setRequests(List.of(request)))
-                .execute();
+            docsService.documents().batchUpdate(documentId,
+                    new BatchUpdateDocumentRequest().setRequests(List.of(request)))
+                    .execute();
+            
+		} catch (IOException e) {
+			throw new GoogleDocsException("Failed to append feedback", e);
+		}
     }
 }

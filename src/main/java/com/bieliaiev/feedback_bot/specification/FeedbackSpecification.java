@@ -6,6 +6,9 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.bieliaiev.feedback_bot.entity.Feedback;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class FeedbackSpecification {
 
 	public static Specification<Feedback> filterByDate(LocalDate date) {

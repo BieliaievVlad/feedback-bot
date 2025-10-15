@@ -26,7 +26,8 @@ public class StaticStrings {
             Respond strictly in JSON:
             {"category": "...", "level": ..., "solution": "..."}
             """;
-	public final String GOOGLE_CREDS = "/google-credentials.json";
+	public final String OPEN_AI_MODEL = "gpt-3.5-turbo";
+	
 	public final String GOOGLE_APP_NAME = "Feedback Bot";
 	public final String GOOGLE_DOC_TEXT_FORMAT = "%s%n%s, %s%n%s%nCategory: %s%nCriticality level: %d%nSolution: %s%n----------------------%n";
 	

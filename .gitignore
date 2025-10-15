@@ -4,6 +4,12 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 /logs
+.env
+src/main/resources/google-credentials.json
+backup/
+backup-repo/
+*.bak
+*.tmp
 
 ### STS ###
 .apt_generated

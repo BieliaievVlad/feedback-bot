@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
 import com.bieliaiev.feedback_bot.service.UserService;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +18,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -27,30 +26,30 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-        	.userDetailsService(userService)
-            .csrf().disable()
-            .sessionManagement()
-            	.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-            	.and()
-            .authorizeRequests()
-            	.requestMatchers("/feedback-bot-webhook").permitAll()
-            	.requestMatchers("/", "/login").permitAll()
-            	.requestMatchers("/static/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                .anyRequest().authenticated();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .userDetailsService(userService)
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+            )
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/feedback-bot-webhook").permitAll()
+                    .requestMatchers("/", "/login").permitAll()
+                    .requestMatchers("/css/**", "/js/**", "/webjars/**").permitAll()
+                    .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                    .defaultSuccessUrl("/", true)
+                    .failureUrl("/login?error=true")
+                    .permitAll()
+            )
+            .logout(logout -> logout
+            	    .logoutUrl("/logout")
+            	    .logoutSuccessUrl("/")
+            	    .permitAll()
+            	);
 
-        httpSecurity
-            .formLogin()
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error=true")
-                .permitAll();
-
-        httpSecurity
-            .logout()
-                .permitAll()
-                .logoutSuccessUrl("/");
-
-        return httpSecurity.build();
+        return http.build();
     }
 }
