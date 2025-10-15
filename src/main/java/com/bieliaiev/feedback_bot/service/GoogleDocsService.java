@@ -27,12 +27,9 @@ public class GoogleDocsService {
 
 	@Value("${google.document.id}")
 	private String documentId;
-	
-	@Value("${google.creds.path}")
-	private String googleCreds;
     private Docs docsService;
     
-	public GoogleDocsService() {
+	public GoogleDocsService(@Value("${google.creds.path}") String googleCreds) {
 
 		try (InputStream in = getClass().getResourceAsStream(googleCreds)) {
 
