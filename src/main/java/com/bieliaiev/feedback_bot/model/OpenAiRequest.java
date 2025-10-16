@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class User {
+public class OpenAiRequest {
 
-	private Long chatId;
-	private String position;
-	private String branch;
+	private String model;
+	private Message[] messages;
+	private double temperature;
 }

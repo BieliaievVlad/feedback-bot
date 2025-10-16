@@ -3,29 +3,28 @@ package com.bieliaiev.feedback_bot.service;
 import org.springframework.stereotype.Service;
 
 import com.bieliaiev.feedback_bot.cache.UserCache;
-import com.bieliaiev.feedback_bot.model.User;
+import com.bieliaiev.feedback_bot.model.BotUser;
+
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class CacheService {
 
 	private UserCache cache;
 	
-	public CacheService (UserCache cache) {
-		this.cache = cache;
-	}
-	
 	public void setChatId (Long chatId) {
 		
-		User user = cache.getUser(chatId);
+		BotUser user = cache.getUser(chatId);
 		
 		if (user == null) {
-			cache.putUser(new User(chatId, null, null));
+			cache.putUser(new BotUser(chatId, null, null));
 		}
 	}
 	
 	public void setPosition (Long chatId, String position) {
 		
-		User user = cache.getUser(chatId);
+		BotUser user = cache.getUser(chatId);
 		
 		if (user != null && user.getChatId() != null) {
 			user.setPosition(position);
@@ -35,7 +34,7 @@ public class CacheService {
 	
 	public void setBranch (Long chatId, String branch) {
 		
-		User user = cache.getUser(chatId);
+		BotUser user = cache.getUser(chatId);
 		
 		if (user != null && user.getChatId() != null && user.getPosition() != null) {
 			user.setBranch(branch);
@@ -43,11 +42,11 @@ public class CacheService {
 		}
 	}
 	
-	public User getUser(Long chatId) {
+	public BotUser getUser(Long chatId) {
 		return cache.getUser(chatId);
 	}
 	
-	public boolean isUserValid (User user) {
+	public boolean isUserValid (BotUser user) {
 		return user != null && 
 				user.getChatId() != null &&
 				user.getPosition() != null &&

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedbacks</title>
+<link rel="stylesheet"
+	href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+<style>
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    td, th {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 140px;
+    }
+</style>
+</head>
+<body>
+
+	<div th:replace="~{layout :: navbar}"></div>
+
+		<h1 class="text-center">Feedbacks</h1>
+		
+	<div th:if="${dateAlert}" class="alert alert-warning mt-3">
+    	<p th:text="${dateAlert}"></p>
+	</div>
+	
+	<form th:action="@{/feedbacks}" method="get">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="startDate" class="form-label">From Date</label>
+                <input type="date" id="startDate" name="startDate" class="form-control"
+                    th:value="${startDate}" />
+            </div>
+            <div class="col-md-3">
+                <label for="endDate" class="form-label">To Date</label>
+                <input type="date" id="endDate" name="endDate" class="form-control"
+                    th:value="${endDate}" />
+            </div>                        
+            <div class="col-md-3">
+                <label for="positionName" class="form-label">Position</label>
+                <select id="positionName" name="positionName" class="form-control">
+                    <option value="">Select Position</option>
+                    <option th:each="position : ${positionNames}" 
+                    		th:if="${position != null && !position.isEmpty()}"
+                            th:value="${position}" 
+                            th:text="${position}" 
+                            th:selected="${position==positionName}"></option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="branchName" class="form-label">Branch</label>
+                <select id="branchName" name="branchName" class="form-control">
+                    <option value="">Select Branch</option>
+                    <option th:each="branch : ${branchNames}" 
+                            th:value="${branch}" 
+                            th:text="${branch}" 
+                            th:selected="${branch == branchName}"></option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="categoryName" class="form-label">Category</label>
+                <select id="categoryName" name="categoryName" class="form-control">
+                    <option value="">Select Category</option>
+                    <option th:each="category: ${categoryNames}" 
+                            th:value="${category}" 
+                            th:text="${category}" 
+                            th:selected="${category == categoryName}"></option>
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <label for="levelValue" class="form-label">Level</label>
+                <select id="levelValue" name="levelValue" class="form-control">
+                    <option value="">Select Level</option>
+                    <option th:each="level : ${levels}" 
+                            th:value="${level}" 
+                            th:text="${level}" 
+                            th:selected="${level == levelValue}"></option>
+                </select>
+            </div> 
+
+        </div>
+        <div class="mt-3 text-center">
+            <button type="submit" class="btn btn-primary">Filter</button>
+             <a href="/feedbacks" class="btn btn-secondary">Reset Filters</a>
+        </div>
+    </form>
+
+	<div class="mt-3">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th style="width: 15px;">ID</th>
+					<th style="width: 70px;">Time</th>
+					<th style="width: 40px;">Position</th>
+					<th style="width: 40px;">Branch</th>
+					<th style="width: 40px;">Category</th>
+					<th style="width: 15px;">Level</th>
+					<th style="width: 145px;">Text</th>
+					<th style="width: 145px;">Solution</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="feedback : ${feedbacks}">
+					<tr>
+						<td th:text="${feedback.id}"></td>
+						<td th:text="${feedback.createdAt}"></td>
+						<td th:text="${feedback.position}"></td>
+						<td th:text="${feedback.branch}"></td>
+						<td th:text="${feedback.category}"></td>
+						<td th:text="${feedback.level}"></td>
+						<td th:text="${feedback.feedbackText}"></td>
+						<td th:text="${feedback.solution}"></td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+		<div class="mt-3">
+			<a href="javascript:history.back()" class="btn btn-primary">Back</a>
+		</div>
+		<div class="mt-3">
+			<a href="/" class="btn btn-primary">Back to Home</a>
+		</div>
+	</div>
+
+	<script src="/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

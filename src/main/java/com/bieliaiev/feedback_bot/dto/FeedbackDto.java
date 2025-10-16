@@ -2,20 +2,21 @@ package com.bieliaiev.feedback_bot.dto;
 
 import java.time.LocalDateTime;
 
-import com.bieliaiev.feedback_bot.model.User;
+import com.bieliaiev.feedback_bot.model.FeedbackAnalysis;
+import com.bieliaiev.feedback_bot.model.BotUser;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class FeedbackDto {
 
 	private Long id;
 	private LocalDateTime createdAt;
-	private User user;
+	private BotUser botUser;
 	private String feedbackText;
-	private String category;
-	private Integer level;
-	private String solution;
+	private FeedbackAnalysis analysis;
 }
