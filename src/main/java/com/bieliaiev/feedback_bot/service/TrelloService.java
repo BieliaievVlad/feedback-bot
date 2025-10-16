@@ -18,7 +18,11 @@ public class TrelloService {
 	
 	@Value("${trello.list.id}")
     private String listId;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+    
+    public TrelloService (RestTemplate restTemplate) {
+    	this.restTemplate = restTemplate;
+    }
 
     public void createCard(String title, String description) {
         String url = UriComponentsBuilder.fromUriString(StaticStrings.TRELLO)

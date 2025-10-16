@@ -20,8 +20,13 @@ public class OpenAiService {
 
 	@Value("${openai.api.key}")
     private String apiKey;
-	private final HttpClient client = HttpClient.newHttpClient();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+	private final HttpClient client;
+    private final ObjectMapper objectMapper;
+    
+    public OpenAiService(HttpClient client, ObjectMapper objectMapper) {
+        this.client = client;
+        this.objectMapper = objectMapper;
+    }
 
     public FeedbackAnalysis analyzeFeedback(String feedbackText) {
     	

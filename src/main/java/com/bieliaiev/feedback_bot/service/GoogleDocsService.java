@@ -26,11 +26,14 @@ import com.google.auth.oauth2.GoogleCredentials;
 public class GoogleDocsService {
 
 	@Value("${google.document.id}")
-	private String documentId;
-    private Docs docsService;
+	protected String documentId;
+    protected Docs docsService;
     
 	public GoogleDocsService(@Value("${google.creds.path}") String googleCreds) {
-
+		this.docsService = initDocsService(googleCreds);
+	}
+	
+	protected Docs initDocsService (String googleCreds) {
 		try (InputStream in = getClass().getResourceAsStream(googleCreds)) {
 
 			if (in == null) {
@@ -40,14 +43,18 @@ public class GoogleDocsService {
 			GoogleCredentials credentials = GoogleCredentials.fromStream(in)
 					.createScoped(List.of(DocsScopes.DOCUMENTS, DocsScopes.DRIVE));
 
-			docsService = new Docs.Builder(GoogleNetHttpTransport.newTrustedTransport(),
-					GsonFactory.getDefaultInstance(), new HttpCredentialsAdapter(credentials))
-					.setApplicationName(StaticStrings.GOOGLE_APP_NAME).build();
+			return new Docs.Builder(
+                    GoogleNetHttpTransport.newTrustedTransport(),
+                    GsonFactory.getDefaultInstance(),
+                    new HttpCredentialsAdapter(credentials))
+                    .setApplicationName(StaticStrings.GOOGLE_APP_NAME)
+                    .build();
 
 		} catch (IOException | GeneralSecurityException e) {
 			throw new GoogleDocsException("Failed to initialize Google Docs service", e);
 		}
 	}
+	
 
     public void appendFeedback(FeedbackDto feedback) throws IOException {
 
@@ -55,8 +62,8 @@ public class GoogleDocsService {
             String formatted = String.format(
                     StaticStrings.GOOGLE_DOC_TEXT_FORMAT,
                     feedback.getCreatedAt(),
-                    feedback.getUser().getPosition(),
-                    feedback.getUser().getBranch(),
+                    feedback.getBotUser().getPosition(),
+                    feedback.getBotUser().getBranch(),
                     feedback.getFeedbackText(),
                     feedback.getAnalysis().getCategory(),
                     feedback.getAnalysis().getLevel(),

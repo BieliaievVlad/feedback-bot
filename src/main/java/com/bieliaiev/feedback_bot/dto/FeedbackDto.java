@@ -7,14 +7,16 @@ import com.bieliaiev.feedback_bot.model.BotUser;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class FeedbackDto {
 
 	private Long id;
 	private LocalDateTime createdAt;
-	private BotUser user;
+	private BotUser botUser;
 	private String feedbackText;
 	private FeedbackAnalysis analysis;
 }
